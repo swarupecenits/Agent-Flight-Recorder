@@ -1,0 +1,57 @@
+# Dependencies and compiled output
+node_modules/
+/dist/
+*.tsbuildinfo
+/coverage/
+.cache/
+.vite/
+
+# Local recordings, approval data, exports, screenshots, and browser traces
+/data/
+/artifacts/
+/test-results/
+/playwright-report/
+/playwright/.cache/
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+
+# Environment files and credentials; the committed examples contain no secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+.npmrc.local
+.npmrc.user
+.aws/
+.azure/
+.ssh/
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Logs, archives, temporary files, and Python caches
+*.log
+logs/
+*.pid
+*.tmp
+*.bak
+*.orig
+*.tgz
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Per-developer editor and operating-system state
+.vscode/
+.idea/
+*.suo
+*.user
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,15 @@
+{
+  "name": "agent-flight-recorder-sdk",
+  "version": "1.0.0",
+  "description": "Framework-neutral capture SDK for the local Agent Flight Recorder prototype",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swarupecenits/Agent-Flight-Recorder.git",
+    "directory": "sdk"
+  },
+  "type": "module",
+  "exports": { ".": { "types": "./recorder.d.mts", "import": "./recorder.mjs" } },
+  "types": "./recorder.d.mts",
+  "files": ["recorder.mjs", "recorder.d.mts", "privacy.mjs", "README.md"],
+  "engines": { "node": ">=22" }
+}

@@ -1,0 +1,2 @@
+THIS IS INTENTIONALLY NOT JSON.
+The persistent-failure scenario opens this fictional fixture and encounters a real JSON parsing error.

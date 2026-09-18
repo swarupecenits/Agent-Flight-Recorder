@@ -1,0 +1,6 @@
+{
+  "title": "Fictional restricted board report",
+  "fictional": true,
+  "classification": "restricted",
+  "note": "The demo policy must prevent ReadFileTool from opening this file."
+}

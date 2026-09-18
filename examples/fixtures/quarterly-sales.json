@@ -1,0 +1,12 @@
+{
+  "title": "Northstar Q2 2026 sales report",
+  "period": "Q2 2026",
+  "fictional": true,
+  "currency": "USD",
+  "previousQuarterTotal": 3400000,
+  "sales": [
+    { "region": "North America", "revenue": 2400000, "deals": 144 },
+    { "region": "Europe", "revenue": 1600000, "deals": 98 },
+    { "region": "Asia Pacific", "revenue": 1000000, "deals": 66 }
+  ]
+}
