@@ -1,0 +1,21 @@
+import { loadLocalEnvironment } from '../server/environment.mjs';
+import { createFoundryProvider } from '../server/foundry.mjs';
+import { createLiveEvidenceDemo } from '../server/lens.mjs';
+import { planRecovery, executeMockRecovery } from '../lens/recovery.ts';
+import { compareEvidence } from '../lens/engine.ts';
+
+loadLocalEnvironment();
+const result = await createLiveEvidenceDemo(createFoundryProvider(), 'stale', true);
+const finding = result.assessment.findings[0];
+const checkpoint = result.recording.events.find(event => event.checkpoint);
+const plan = planRecovery(result.recording, finding.id, checkpoint.id, false);
+console.log('Live Azure response:', result.draft.responseId);
+console.log('Model:', result.draft.model, '| Streamed text deltas:', result.draft.streamedDeltas);
+console.log('Measured usage:', JSON.stringify(result.draft.usage));
+console.log('Before recovery:', finding.verdict, '-', finding.reasonCode);
+console.log('CLI-authorized fixed synthetic recovery:', plan.restartBoundary);
+console.log('Effects: in-memory assertions only; zero external writes; no live-tool fallback.');
+const corrected = executeMockRecovery(result.recording, plan, plan.id);
+console.log('Comparison:', JSON.stringify(compareEvidence(result.recording, corrected), null, 2));
+console.log('\nAdvisory live-model handoff:\n' + result.draft.text);
+console.log('\nNo recording or API credential was exported. Use the VS Code companion to save an encrypted recording.');

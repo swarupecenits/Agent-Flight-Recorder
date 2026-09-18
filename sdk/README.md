@@ -82,3 +82,70 @@ Nested callbacks use `AsyncLocalStorage` to retain parent span IDs. Concurrent c
 HTTP recording writes use a 15-second timeout. There is no silent offline queue. The events endpoint supports idempotency for the same explicit event ID and identical payload; a different payload using that ID is rejected.
 
 The optional `transport` constructor argument is an internal/test extension with `createRun(input)`, `append(runId, writeToken, event)`, and `finish(runId, writeToken, result)`. The included demo uses the same SDK with an in-process transport to the same validated store.
+
+## Version-bound evidence annotations
+
+The ordinary recorder works without evidence annotations. To evaluate claims in Evidence Lens, explicitly supply the version, scope, measured observation, and evidence links. Tool names or a successful HTTP response alone are not proof of test success or service health.
+
+The complete runnable example is `examples\capture-evidence-agent.mjs`:
+
+```powershell
+npm run demo:evidence
+```
+
+It performs actual local assertions and HTTP SDK capture twice, exports native JSON, and checks the Lens API results: an older passing result is **Unverifiable** for the changed final code; a fresh passing result is **Supported**. Its data is labeled fictional. No model or external infrastructure call is made.
+
+### Annotation contract
+
+| Location | Fields |
+| --- | --- |
+| Start-run `metadata.evidenceLens` | `{version: 1, finalScope?, inventory?}` |
+| Event `attributes.lens` | `{version: 1, scope?, contextSnapshot?, observation?, claim?, assetIds?}` |
+| `scope` / `finalScope` | Optional known `repositoryId`, `codeVersion`, `suite`, `environment`, `resourceId`, `queryScope`. Unknown values stay absent. Include a full resource identity/query scope where needed to distinguish tenants, subscriptions or namespaces. |
+| `observation` | A compatible positive assertion kind (`test`, `action`, `health`, `citation`), actual outcome, and applicable measurements. Citation observations use `sourceId`, `sourceVersion`, `excerpt`, and `excerptHash`. |
+| `claim` | `{kind, text, appliesTo: "final" \| "captured", evidenceIds: [...]}`; citation-fidelity claims additionally supply `quote`. |
+| `inventory` item | `{kind, id, name, version: string \| null, available: boolean, usedBy: [...]}`; event `assetIds` also link usage to actual captured steps. |
+
+Refer to `lens\types.ts` and `lens\schema.ts` for the full checked contract. For example, a test observation needs an actual compatible exit status; the engine does not turn an unknown exit code into a pass.
+
+Inside an already started run, the linking pattern is:
+
+```javascript
+// These values must come from your actual validation and version measurement.
+const observed = await run.event('decision', 'Observed validation result', {
+  attributes: {
+    lens: {
+      version: 1,
+      scope: observedScope,
+      observation: {
+        kind: 'test',
+        outcome: result.exitCode === 0 ? 'passed' : 'failed',
+        exitCode: result.exitCode,
+        passed: result.passed,
+        failed: result.failed,
+      },
+      assetIds: ['your-validation-harness'],
+    },
+  },
+});
+await run.event('decision', 'Final captured version', {
+  attributes: { lens: { version: 1, scope: finalScope, contextSnapshot: true } },
+});
+await run.event('decision', 'Final validation claim', {
+  attributes: {
+    lens: {
+      version: 1, scope: finalScope,
+      claim: {
+        kind: 'test', text: 'The final captured version passes this test suite.',
+        appliesTo: 'final', evidenceIds: [observed.id],
+      },
+    },
+  },
+});
+```
+
+Declare the harness in `metadata.evidenceLens.inventory` before referencing its asset ID. Use actual immutable identifiers/fingerprints, not a moving branch name, guessed revision, or invented environment. Publish a new context snapshot when the delivered version changes. Claims must reference real earlier event IDs.
+
+The checker evaluates the declared positive assertion kind and exact linked scope. It is not a general natural-language fact checker. `appliesTo: "captured"` is for a claim explicitly about that earlier version/target, not a way to relabel a final-code claim as supported.
+
+Native export preserves the source hash chain. Lens verifies that chain, then creates a minimized derivative by default. It does not infer missing manifests, expose hidden reasoning, restore arbitrary runtimes, or authenticate the original source. See `docs\EVIDENCE-LENS.md` for the complete boundaries.

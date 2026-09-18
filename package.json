@@ -21,31 +21,42 @@
     "start": "node server/index.mjs",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
-    "test": "node --test test/*.test.mjs",
+    "test": "npm run extension:build && node --test test/*.test.mjs",
     "test:e2e": "playwright test",
     "browser:install": "playwright install chromium",
     "browser:install:ci": "playwright install --with-deps chromium",
     "check": "npm run build && npm test",
     "demo": "node examples/capture-custom-agent.mjs",
     "demo:prepare": "node scripts/prepare-demo.mjs",
-    "demo:screens": "node scripts/capture-screens.mjs"
+    "demo:screens": "node scripts/capture-screens.mjs",
+    "extension:build": "tsc -p extension/tsconfig.json && node scripts/build-extension.mjs",
+    "extension:package": "npm run extension:build && node scripts/package-extension.mjs",
+    "demo:live": "node scripts/live-evidence-demo.mjs",
+    "test:extension": "npm run extension:build && node scripts/test-extension.mjs",
+    "demo:evidence": "node examples/capture-evidence-agent.mjs",
+    "demo:evidence-fixtures": "node scripts/prepare-evidence-fixtures.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/node": "2.0.0",
     "@modelcontextprotocol/server": "2.0.0",
     "express": "5.2.1",
     "lucide-react": "0.468.0",
+    "openai": "7.15.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "zod": "4.5.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@playwright/test": "1.63.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@types/vscode": "1.93.0",
+    "@vscode/vsce": "4.0.0",
     "@vitejs/plugin-react": "5.2.0",
     "typescript": "5.9.3",
+    "esbuild": "0.28.2",
     "vite": "7.3.6"
   }
 }

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "types": ["node", "vscode"]
+  },
+  "include": ["src", "test", "../lens", "../sdk/*.d.mts", "../shared/*.d.mts", "../src/components/EvidenceWorkbench.tsx", "../src/components/Preferences.tsx", "../src/components/Dialog.tsx", "../src/components/JsonBlock.tsx", "../src/lib/format.ts"]
+}

@@ -68,6 +68,34 @@ MCP SDK reference: `https://github.com/modelcontextprotocol/typescript-sdk`
 
 The server binds only to loopback, checks Host/Origin, rejects form-like mutation requests, requires a client header on mutation APIs, validates JSON shapes, restricts body size, and serves only built frontend assets. These are local prototype boundaries, not multi-user authentication.
 
-Data uses ordinary filesystem persistence, not application-level encryption. Reviewer names are local labels. Redaction is best effort. Hashes are unkeyed consistency checks, not authenticated provenance. Do not expose this development collector publicly without a separate authenticated, encrypted, multi-tenant deployment design.
+The original recorder uses ordinary filesystem persistence, not application-level encryption. The separate VS Code Lens vault is described below. Reviewer names are local labels. Redaction is best effort. Hashes are unkeyed consistency checks, not authenticated provenance. Do not expose this development collector publicly without a separate authenticated, encrypted, multi-tenant deployment design.
 
 The application never uploads source code, recordings, reports, or credentials to a cloud service on its own.
+
+## Evidence Lens companion
+
+```text
+Shared React evidence workbench
+    | browser: in-memory preview -> loopback Lens API
+    | VS Code: controller -> versioned child-process IPC
+                               |
+                        isolated recorder worker
+                          validate / redact / normalize
+                          deterministic version/scope checks
+                          AES-256-GCM records + separate artifacts
+                          SecretStorage key supplied over IPC
+                          reviewed fixed mock recovery
+
+Public VS Code Tasks API -> selected task exit + bounded before/after file hashes
+Reviewed rule proposal  -> virtual read-only diff -> approved workspace edit
+
+Explicit reviewed model request -> loopback backend -> Azure Responses stream
+    only approved bounded metadata; API key remains server-side
+    measured model metadata + advisory draft; verdicts stay deterministic
+```
+
+Browser previews, legacy SQLite, encrypted extension storage, plaintext reviewed exports, and external model processing have distinct boundaries. They are not presented as one encrypted system.
+
+The extension does not read private Copilot/CLI panels or hidden reasoning. Public adapter health, gaps, consent, content capture, external-analysis choices, retention, and export review are visible. The fixed mock harness cannot execute arbitrary code or switch to a live tool.
+
+See `EVIDENCE-LENS.md` for schemas, source compatibility, encryption details, exact recovery semantics and limits.

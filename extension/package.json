@@ -1,0 +1,61 @@
+{
+  "name": "agent-evidence-lens",
+  "displayName": "Agent Evidence Lens",
+  "description": "The work is done. Does the proof still apply? Local, encrypted, version-aware evidence for agent runs.",
+  "version": "0.1.0",
+  "publisher": "swarupecenits",
+  "private": true,
+  "engines": { "vscode": "^1.93.0" },
+  "categories": ["Other"],
+  "keywords": ["agents", "evidence", "debugging", "flight-recorder"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swarupecenits/Agent-Flight-Recorder.git",
+    "directory": "extension"
+  },
+  "main": "./dist/extension.cjs",
+  "extensionKind": ["ui"],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Read and import explicit recordings. Workspace task execution and instruction edits require workspace trust."
+    },
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "Encrypted files, repository fingerprints, and task capture require a local desktop extension host."
+    }
+  },
+  "activationEvents": ["onView:agentEvidenceLens.launcher"],
+  "contributes": {
+    "commands": [
+      { "command": "agentEvidenceLens.open", "title": "Evidence Lens: Open Workbench", "icon": "$(inspect)" },
+      { "command": "agentEvidenceLens.import", "title": "Evidence Lens: Import Recording" },
+      { "command": "agentEvidenceLens.example", "title": "Evidence Lens: Try a Local Example" },
+      { "command": "agentEvidenceLens.liveDemo", "title": "Evidence Lens: Run Reviewed Azure Demo" },
+      { "command": "agentEvidenceLens.captureTask", "title": "Evidence Lens: Capture a Selected Validation Task" },
+      { "command": "agentEvidenceLens.privacy", "title": "Evidence Lens: Privacy & Source Health" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        { "id": "agentEvidenceLens", "title": "Evidence Lens", "icon": "media/lens.svg" }
+      ]
+    },
+    "views": {
+      "agentEvidenceLens": [
+        { "id": "agentEvidenceLens.launcher", "name": "Evidence Lens" }
+      ]
+    },
+    "configuration": {
+      "title": "Agent Evidence Lens",
+      "properties": {
+        "agentEvidenceLens.collectorUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:4180",
+          "scope": "application",
+          "description": "Loopback Agent Flight Recorder URL. The backend holds optional Azure credentials; the extension never receives the API key."
+        }
+      }
+    }
+  },
+  "files": ["dist/extension.cjs", "dist/worker.cjs", "dist/webview.js", "dist/webview.css", "dist/THIRD-PARTY-NOTICES.txt", "media/lens.svg", "README.md", "package.json"]
+}

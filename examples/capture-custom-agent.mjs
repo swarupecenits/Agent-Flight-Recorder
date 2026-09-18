@@ -1,5 +1,7 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { FlightRecorder } from '../sdk/recorder.mjs';
+import { loadLocalEnvironment } from '../server/environment.mjs';
+loadLocalEnvironment();
 
 const baseUrl = process.env.AFR_URL ?? 'http://127.0.0.1:4180';
 const recorder = new FlightRecorder({ baseUrl });

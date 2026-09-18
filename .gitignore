@@ -5,6 +5,11 @@ node_modules/
 /coverage/
 .cache/
 .vite/
+/extension/dist/
+*.vsix
+.vscode-test/
+.evidence-lens/
+*.lens.enc
 
 # Local recordings, approval data, exports, screenshots, and browser traces
 /data/

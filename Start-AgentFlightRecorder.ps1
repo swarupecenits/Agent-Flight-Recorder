@@ -19,7 +19,7 @@ if (-not $SkipBuild -or -not (Test-Path -LiteralPath '.\dist\index.html')) {
     npm run build
     if ($LASTEXITCODE -ne 0) { throw 'The frontend build failed. The server was not started.' }
 }
-$env:AFR_PORT = [string]$Port
-Write-Host "Opening the local recorder server at http://127.0.0.1:$Port"
+if ($PSBoundParameters.ContainsKey('Port')) { $env:AFR_PORT = [string]$Port }
+Write-Host 'Starting the local recorder. The server prints its address below; .env is loaded automatically.'
 node .\server\index.mjs
 if ($LASTEXITCODE -ne 0) { throw "Recorder exited with code $LASTEXITCODE." }

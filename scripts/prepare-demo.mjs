@@ -1,5 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
+import { loadLocalEnvironment } from '../server/environment.mjs';
+loadLocalEnvironment();
 
 const base = process.env.AFR_URL ?? 'http://127.0.0.1:4180';
 async function api(path, body) {

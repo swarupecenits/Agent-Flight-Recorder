@@ -48,7 +48,7 @@ async function readError(response: Response): Promise<ApiError> {
   }
 }
 
-async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const method = (options.method ?? 'GET').toUpperCase();
   const headers = new Headers(options.headers);
   headers.set('Accept', 'application/json');

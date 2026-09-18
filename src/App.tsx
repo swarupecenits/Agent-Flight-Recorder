@@ -44,6 +44,8 @@ import type {
   TraceEvent,
 } from '../shared/contracts.ts';
 import { JsonBlock } from './components/JsonBlock';
+import { EvidencePage } from './components/EvidencePage';
+import { WorkspaceBar } from './components/Preferences';
 import { StatusChip } from './components/StatusChip';
 import { api, getErrorMessage } from './lib/api';
 import {
@@ -184,19 +186,22 @@ function App() {
       }}>
         Skip to content
       </a>
-      <aside className="sidebar">
+      <aside className="sidebar" aria-label="Workspace navigation">
         <div className="brand-block">
           <div className="brand-mark" aria-hidden="true">
             <Waypoints size={24} />
           </div>
           <div>
-            <p className="eyebrow">Local observability workbench</p>
-            <h1>Agent Flight Recorder</h1>
+            <p className="eyebrow">Agent workspace</p>
+            <h1>Flight Recorder<span className="brand-period">.</span></h1>
           </div>
         </div>
         <nav className="sidebar-nav" aria-label="Primary">
           <SidebarLink href={recordingsHash()} active={route.page === 'recordings'} icon={<Activity size={18} />}>
             Recordings
+          </SidebarLink>
+          <SidebarLink href={pageHash('evidence')} active={route.page === 'evidence'} icon={<CheckCircle2 size={18} />}>
+            Evidence Lens
           </SidebarLink>
           <SidebarLink href={pageHash('insights')} active={route.page === 'insights'} icon={<Gauge size={18} />}>
             Insights
@@ -209,23 +214,21 @@ function App() {
           </SidebarLink>
         </nav>
         <div className="sidebar-panel">
-          <p className="sidebar-panel-title">Scope</p>
-          <p>
-            Local capture of prompts, decisions, model and tool calls, retries, policy gates, approvals, failures,
-            replay, and exports.
-          </p>
-          <p className="muted-text">
-            Scripted demos are deterministic and fictional. Replay is always read-only.
-          </p>
+          <p className="sidebar-panel-title">Built for the next “why?”</p>
+          <p>Follow the run. Question the claim. Leave better evidence.</p>
+          <p className="muted-text">Local by default.<br />Azure only when you approve it.</p>
+          <div className="sidebar-signature"><span>AFR</span><span>OBSERVE / VERIFY</span></div>
         </div>
       </aside>
 
       <main className="content-shell" id="main-content" tabIndex={-1}>
+        <WorkspaceBar page={route.page === 'evidence' ? 'Evidence Lens' : route.page === 'run' ? 'Run detail' : sentenceCase(route.page)} />
         {flash ? <InlineNotice tone={flash.tone} message={flash.message} dismiss={() => setFlash(null)} /> : null}
         {route.page === 'recordings' ? <OverviewPage showFlash={showFlash} /> : null}
         {route.page === 'insights' ? <InsightsPage /> : null}
         {route.page === 'policies' ? <PoliciesPage /> : null}
         {route.page === 'connect' ? <ConnectPage showFlash={showFlash} /> : null}
+        <div hidden={route.page !== 'evidence'}><EvidencePage collectorRunId={route.page === 'evidence' ? route.runId : undefined} /></div>
         {route.page === 'invalid' ? <ErrorState message={route.message} /> : null}
         {route.page === 'run' ? (
           <RunDetailPage key={route.runId} runId={route.runId} initialEventSeq={route.eventSeq} showFlash={showFlash} />
@@ -458,16 +461,15 @@ function OverviewPage({ showFlash }: { showFlash: (message: string, tone?: Notic
     <section className="page-stack">
       <header className="page-header">
         <div>
-          <p className="eyebrow">Recorded executions</p>
-          <h2>Trace every observable step of your local agents</h2>
+          <p className="eyebrow">The flight log</p>
+          <h2>Every run has a story.</h2>
           <p className="page-summary">
-            Capture actual backend events for prompts, explicit decisions, tool work, retries, policy gates, local
-            approvals, and outbox deliveries.
+            See what your agent did, where it paused, and what happened next. Rewind without running anything again.
           </p>
         </div>
         <div className="badge-row">
-          <StatusChip tone="accent">Fictional demo data</StatusChip>
-          <StatusChip tone="info">Deterministic local agent logic</StatusChip>
+          <StatusChip tone="accent">Local-first</StatusChip>
+          <StatusChip tone="info">Demo fixtures are fictional</StatusChip>
         </div>
       </header>
 
@@ -491,8 +493,7 @@ function OverviewPage({ showFlash }: { showFlash: (message: string, tone?: Notic
             <FlaskConical size={18} />
           </div>
           <p>
-            Demos use fictional fixtures and scripted formatting. They still execute real local sandbox tools and
-            record actual backend events.
+            Try a safe, local scenario. Its steps really run; the sample data and formatter are deliberately fictional.
           </p>
           <label className="field">
             <span>Scenario</span>
@@ -532,7 +533,7 @@ function OverviewPage({ showFlash }: { showFlash: (message: string, tone?: Notic
             </div>
             <Upload size={18} />
           </div>
-          <p>Import a native Agent Flight Recorder JSON export up to 5 MiB. Identical recordings reopen instead of duplicating data.</p>
+          <p>Pick up a saved recording, without running it again. Native JSON exports up to 5 MiB are supported.</p>
           <label className="field" htmlFor="recording-import">
             <span>Recording file</span>
             <input
@@ -569,7 +570,7 @@ function OverviewPage({ showFlash }: { showFlash: (message: string, tone?: Notic
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Name, agent, scenario, or trace ID"
+              name="runSearch" autoComplete="off" spellCheck={false} placeholder="Try a run name, agent, or ID…"
             />
           </label>
           <label className="field field-inline">
@@ -608,11 +609,11 @@ function OverviewPage({ showFlash }: { showFlash: (message: string, tone?: Notic
             <p>Try a broader search or reset the status filter.</p>
           </div>
         ) : null}
-        <div className="run-list" role="list">
+        <ul className="run-list" data-large={runs.length > 50}>
           {runs.map((run) => (
-            <RunRow key={run.id} run={run} />
+            <li key={run.id}><RunRow run={run} /></li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="panel-grid">
@@ -1056,16 +1057,17 @@ function RunDetailPage({
             <ArrowLeft size={16} />
             Back to recordings
           </a>
-          <p className="eyebrow">Trace detail</p>
+          <p className="eyebrow">Inside this run</p>
           <h2>{detail.run.name}</h2>
           <p className="page-summary">
-            Trace ID {detail.run.traceId} · Agent {detail.run.agentName} · Started {formatDateTime(detail.run.startedAt)}
+            {detail.run.agentName} · Started {formatDateTime(detail.run.startedAt)}
           </p>
         </div>
         <div className="badge-row">
           <StatusChip tone={statusTone(detail.run.status)}>{sentenceCase(detail.run.status)}</StatusChip>
           <StatusChip tone={detail.run.origin === 'demo' ? 'accent' : 'neutral'}>{originLabel(detail.run.origin)}</StatusChip>
           {detail.run.readOnly ? <StatusChip tone="warning">Imported read-only</StatusChip> : null}
+          <a className="secondary-button as-link" href={`#/evidence?run=${encodeURIComponent(detail.run.id)}`}><CheckCircle2 size={16} aria-hidden="true" />Review evidence</a>
           {pendingApproval ? <button className="primary-button" type="button" onClick={() => {
             document.getElementById('pending-approval-heading')?.focus();
           }}>Review pending action</button> : null}
@@ -1090,7 +1092,7 @@ function RunDetailPage({
           <div className="panel-card-header">
             <div>
               <p className="eyebrow">Recording integrity</p>
-              <h3>Hash-chain consistency</h3>
+              <h3>Do the recorded steps match?</h3>
             </div>
             <ShieldCheck size={18} />
           </div>
@@ -1100,6 +1102,7 @@ function RunDetailPage({
             </StatusChip>
           </div>
           <dl className="detail-list">
+            <div><dt>Trace ID</dt><dd className="mono-text">{detail.run.traceId}</dd></div>
             <div>
               <dt>Checked events</dt>
               <dd>{detail.integrity.checkedEvents}</dd>
@@ -1232,7 +1235,7 @@ function RunDetailPage({
           <div className="panel-card-header">
             <div>
               <p className="eyebrow">Replay controls</p>
-              <h3>Chronological debugging</h3>
+              <h3>Rewind the run</h3>
             </div>
             <Play size={18} />
           </div>
@@ -1321,8 +1324,7 @@ function RunDetailPage({
           {detail.run.origin === 'demo' ? (
             <>
               <p>
-                Reruns are new sandbox executions linked by <code>parentRunId</code>. They can execute the local demo
-                tools again, unlike replay.
+                Start a new, linked run with a different scenario. This executes the local demo tools again; replay never does.
               </p>
               <label className="field">
                 <span>Scenario for rerun</span>
@@ -1444,7 +1446,7 @@ function RunDetailPage({
           <p className="muted-text">
             Showing {filteredEvents.length} of {detail.events.length} recorded events.
           </p>
-          <div className="timeline-list" role="list" ref={timelineRef}>
+          <div className="timeline-list" data-large={filteredEvents.length > 50} ref={timelineRef}>
             {filteredEvents.map((event) => {
               const depth = eventDepths.get(event.seq) ?? 0;
               const waterfall = event.durationMs ? Math.max(8, (event.durationMs / maxDuration) * 100) : 0;
@@ -1724,7 +1726,7 @@ function PoliciesPage() {
       </header>
       <div className="inline-note">
         <ShieldAlert size={18} />
-        <p>Local-only scope. No Azure, Foundry, or remote policy service is connected in this prototype.</p>
+        <p>These rules govern the local demo only. They do not change Azure permissions or enforce policy on external agents.</p>
       </div>
       <div className="policy-grid">
         {policies.map((policy) => (
@@ -1815,19 +1817,19 @@ await recorder.run({ name: 'My agent', agentName: 'custom-agent', input: { promp
           <h2>Connect capture, replay, and export</h2>
           <p className="page-summary">
             Instrument your own Node agent with the local capture SDK, post events over HTTP, read recordings through MCP,
-            and export JSON or OTLP without claiming any cloud connection.
+            and export a recording. Optional live Azure reviews are available separately in Evidence Lens.
           </p>
         </div>
       </header>
 
       <div className="inline-note">
         <Plug size={18} />
-        <p>No live Foundry, Azure OpenAI, or hosted cloud agent connection is configured here. This is a local recorder.</p>
+        <p>The collector stays local. Open <a className="text-link" href={pageHash('evidence')}>Evidence Lens</a> for optional, reviewed live Azure calls. A model connection does not deploy or restore a hosted agent.</p>
       </div>
 
       <section className="stats-grid">
         <StatCard icon={<CheckCircle2 size={18} />} label="Health" value={health.status} />
-        <StatCard icon={<Bot size={18} />} label="Model mode" value={health.modelMode} detail="Scripted demo only" />
+        <StatCard icon={<Bot size={18} />} label="Original demo" value="Local fixture" detail="Use Evidence Lens for live Azure" />
         <StatCard icon={<Plug size={18} />} label="Collector URL" value={collectorUrl} />
         <StatCard icon={<Shield size={18} />} label="MCP path" value={health.mcpPath} detail="Read-only endpoint" />
       </section>

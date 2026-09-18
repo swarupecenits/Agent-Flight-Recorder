@@ -12,7 +12,13 @@ The project is a black-box recorder for agents: capture observable execution, re
 | Replay and debug step by step | Safe event stepping, seeking, playback, error/policy breakpoints, and state reconstruction. |
 | Show allowed, blocked, and approval-required actions | Rule ID, outcome, reason, exact requested action, explicit reviewer decision, and resulting execution events. |
 | Identify failures and performance patterns | Derived error/retry findings, blocked actions, pending approvals, incomplete spans, and measured operation durations. |
-| Microsoft Foundry / MCP direction | Working read-only MCP tools, framework-neutral capture, and OTLP/JSON export. No cloud deployment or live Foundry connection is implied. |
+| Microsoft Foundry / MCP direction | Working read-only MCP tools, framework-neutral capture, OTLP/JSON export, and optional real Azure Responses review in Evidence Lens. No hosted-agent deployment or remote policy authority is implied. |
 | Search/read/report/send with approval | An instrumented fictional sales-report agent implements this sequence. Sending is a local outbox receipt, never an actual external email. |
 
 Additional prototype affordances include persistent SQLite storage, immutable JSON imports, chain-consistency checks, native/Markdown/OTLP exports, and linked what-if runs with comparisons.
+
+## Revised Agent Evidence Lens brief
+
+The additional VS Code/browser workbench checks whether observable proof still applies to final code and scope. It adds the separate encrypted worker/vault, manifest, evidence-linked handoff, reviewed correction/recovery, public selected-task capture, and optional real Azure drafts.
+
+See `EVIDENCE-LENS.md` for the complete requirement-to-feature map and the deliberately unavailable private/unsupported adapters. See `TESTING-WALKTHROUGH.md` for every user-facing workflow and expected outcome.

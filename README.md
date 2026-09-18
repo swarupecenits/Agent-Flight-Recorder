@@ -1,10 +1,14 @@
 # Agent Flight Recorder
 
-**A working local black box for observable AI-agent execution.**
+**Follow the run. Question the claim. Leave better evidence.**
 
 Record prompts, explicit decision annotations, model and tool calls, outputs, errors, retries, policy decisions, and human approvals. Inspect the execution timeline, reconstruct state at any event, compare fresh sandbox runs, and export recordings.
 
-The repository contains the complete React workbench, Node.js collector, SQLite persistence, capture SDK, fictional demo agent, examples, tests, and documentation. It requires no cloud account or model credentials.
+The repository contains the React recorder, the **Agent Evidence Lens** browser/VS Code workbench, a Node.js collector, capture SDK, separate encrypted recorder worker, optional live Azure Responses integration, examples, and tests. The original recorder and synthetic evidence examples work without cloud credentials.
+
+The interface has Paper/Graphite themes, three accents, adjustable density and text size, progressive technical detail, reduced motion, keyboard navigation, and mobile layouts.
+
+**Start with `docs\TESTING-WALKTHROUGH.md` for the complete click-by-click feature tour and expected results.** `docs\EVIDENCE-LENS.md` maps the revised brief to implementation and describes its boundaries.
 
 ## Quick start
 
@@ -36,7 +40,25 @@ The launcher restores declared dependencies if necessary, builds the frontend, a
 .\Start-AgentFlightRecorder.ps1 -SkipBuild
 ```
 
-No Azure subscription, model key, Python package, Docker container, SMTP server, or cloud deployment is required to use the complete local prototype.
+No Azure subscription, model key, Python package, Docker container, SMTP server, or cloud deployment is required for the local recorder and synthetic Lens examples. Live Azure drafts require an existing deployment and a local key.
+
+### Evidence Lens and VS Code
+
+Open **Evidence Lens** in the browser and try **The code changed after the test**. Expect **Unverifiable**, not a claim that the final code is broken. Review the linked result, inspect the Manifest, approve a bounded mock recovery, and compare the new proof.
+
+For encrypted persistence and real selected-task capture:
+
+```powershell
+npm run extension:package
+```
+
+Install `artifacts\agent-evidence-lens-0.1.0.vsix` using VS Code's **Extensions: Install from VSIX**, then open the Evidence Lens activity-bar view. This is a local package, not a Marketplace publication.
+
+### Optional real Azure model
+
+Copy `.env.example` to `.env` only if no local `.env` exists, then configure your Azure `/openai/v1` endpoint, deployment, and API key. Set `AFR_ENABLE_FOUNDRY=1` and restart the backend. The key stays server-side; never put it in `VITE_*` variables or commit it.
+
+**Use live Azure** previews synthetic evidence before invoking a real streaming model. **Draft with Azure** previews selected, minimized claim/scope metadata. Model prose is advisory and cannot change deterministic verdicts. `npm run demo:live` runs a small real-model demonstration; it can consume quota.
 
 ## What works
 
@@ -54,6 +76,13 @@ No Azure subscription, model key, Python package, Docker container, SMTP server,
 | Export/import | Compact native JSON with chain validation, a Markdown report, and an OTLP/JSON trace projection. Imported recordings are immutable snapshots. |
 | External instrumentation | A real HTTP Node SDK example plus a dependency-free Python example. Capture your own agent code without changing the UI. |
 | MCP | A stateless Streamable HTTP endpoint with five working read-only tools: list runs, get trace events, replay state, find failures, and compare runs. |
+| Evidence validity | Version/scope-bound positive assertions, four explicit verdicts, source links, capture gaps, and required next checks. |
+| Run Manifest and handoff | Available versus used inventory; version/source health; evidence-linked summaries and separate reviewed corrections. |
+| Encrypted VS Code companion | Separate bundled worker, AES-256-GCM records/artifacts, SecretStorage keys, consent, minimization, reviewed exports and retention. |
+| Reviewed recovery | Compatible fixed mock state or a clearly labeled new run; explicit effect/limit review, duplicate protection, parent linkage and before/after evidence comparison. |
+| Actual selected tasks | Public VS Code task exit events and bounded before/after Git-visible file hashes. No private terminal or Chat interception. |
+| Reviewed workspace rules | A scoped proposed instruction, displayed diff, explicit approval and concurrent-edit protection; no silent learning. |
+| Live Azure | Real Responses streaming with measured token/delta/duration metadata, bounded requests, exact previews, opt-in analysis and explicit failures. |
 
 ## Try the full workflow
 
@@ -117,16 +146,18 @@ MCP clients can connect to **`http://127.0.0.1:4180/mcp`** using Streamable HTTP
 ## Honest prototype boundaries
 
 - **The included demo agent is scripted local code, not a live LLM.** Its tool invocations, errors, retries, policies, and receipts are real local operations captured by the SDK. The formatter is labeled `ScriptedReportFormatter`, and token usage is unmeasured rather than invented.
-- The recorder can wrap real model clients, but **no Azure OpenAI or Microsoft Foundry deployment is configured or claimed to be connected**. A cloud-hosted agent cannot reach a loopback MCP endpoint without an explicitly designed network/deployment path.
+- The optional Evidence Lens Azure integration makes real model calls only when configured and approved. The five original report scenarios remain scripted. No hosted Foundry agent is deployed, and a cloud-hosted agent cannot reach loopback MCP without a separate network design.
 - A decision event is an explicit developer/agent annotation. The system does **not** access hidden model chain-of-thought or reconstruct unobserved reasoning.
 - `SendEmailTool` writes to a local SQLite outbox only. It never contacts Graph, SMTP, or a real recipient. The `.example` domains and all report data are fictional.
 - The policy engine controls the included sandbox runner. Instrumenting an external agent records its events; it does not automatically enforce enterprise-wide policies on that agent.
 - This is a **single-user, loopback-only prototype**, not a hosted multi-tenant service. Reviewer labels are local audit labels, not authenticated Microsoft identities.
-- Per-run write tokens protect capture writes. The client header is a CSRF boundary, **not user authentication**. There is no encryption-at-rest feature; protect the database and exports using normal filesystem controls.
+- Per-run write tokens protect capture writes. The client header is a CSRF boundary, **not user authentication**. The original SQLite database and plaintext exports are not encrypted by the app; the VS Code Lens vault is separately encrypted.
 - Recursive credential-pattern redaction runs in the Node SDK and collector. It is **best effort, not a DLP guarantee**; inspect recordings before sharing. The lightweight Python example relies on collector-side redaction.
 - SHA-256 hash chains detect inconsistent or modified event chains. They are **not digital signatures**: someone who can rewrite the entire file can also recompute its hashes.
 - Capture fails explicitly on invalid data or capacity limits. Limits are 500 recordings per database, 1,000 events per recording, 64 KiB per event, and 4 MiB of event data per recording. Two event slots and 128 KiB are reserved for final output/termination. Keep large documents in your own storage and record references or selected excerpts.
 - Native JSON import supports this application's version-1 recording format. OTLP is an **export projection**, not an OTLP ingestion server. Approval queues and executable code are not imported.
+- Evidence checks operate on explicitly declared positive assertion kinds and scope, not arbitrary natural-language fact checking. Private Copilot panels, hidden reasoning, opaque MCP internals, and arbitrary CLI/Agency exact resume are unavailable.
+- The browser Lens is a session preview, not persistent encrypted storage. Use the VS Code companion for that; a lost SecretStorage key cannot decrypt existing records.
 
 ## Development
 
@@ -135,10 +166,14 @@ Stop the production launcher before using development mode; both modes use the s
 ```powershell
 npm run dev        # API 4180 and Vite 5180; open http://127.0.0.1:5180
 npm run build      # TypeScript and production assets
-npm test           # Node capture / SDK / HTTP / persistence / MCP cases
+npm test           # Extension build plus recorder / evidence / encryption / HTTP / worker cases
 npm run check      # Production build and Node suite
 npm run browser:install # Install the locked Playwright Chromium browser once
 npm run test:e2e   # Isolated headless Chromium browser workflows
+npm run test:extension # Actual installed VS Code, isolated test profile and synthetic task
+npm run extension:package # Produce the local installable VSIX
+npm run demo:evidence # Real SDK captures with versioned evidence annotations
+npm run demo:evidence-fixtures # Seven synthetic import fixtures
 ```
 
 Browser tests use an in-memory database and their own ignored output directories. They do not require saved demo recordings or an existing browser profile. `AFR_BROWSER` can override the executable when using an existing Edge or Chromium installation.
@@ -179,8 +214,14 @@ Run `npm run browser:install` before screenshot capture unless `AFR_BROWSER` poi
 | `AFR_DEV` | unset | Set automatically by the development launcher for the Vite origin |
 | `AFR_BROWSER` | Playwright Chromium | Optional browser executable for tests and screenshots |
 | `AFR_E2E_PORT` | `4398` | Isolated browser-test server port |
+| `AFR_ENABLE_FOUNDRY` | unset/off | Explicitly enable optional live Azure requests |
+| `AZURE_OPENAI_BASE_URL` | unset | Existing resource's HTTPS `/openai/v1` endpoint |
+| `AZURE_OPENAI_DEPLOYMENT` | unset | Existing model deployment name |
+| `AZURE_OPENAI_API_KEY` | unset | Server-only local credential; never exposed to UI/export |
+| `AZURE_AI_PROJECT_ENDPOINT` | unset | Optional operator reference; model inference uses the base URL above |
+| `VSCODE_EXECUTABLE` | detected on Windows | Installed desktop executable for the isolated extension-host test |
 
-`.env.example` documents optional configuration, but scripts do not automatically load `.env`. Set variables in your terminal, for example `$env:AFR_PORT = '4181'` in PowerShell before `npm start`.
+`npm start`, `npm run dev`, and the Node demo helpers load the ignored root `.env`. Existing shell values take precedence, for example `$env:AFR_PORT = '4181'` before `npm start`. Keep `AFR_URL` aligned when changing ports. The PowerShell launcher overrides the environment port only when `-Port` is explicitly supplied.
 
 If a port is occupied, use a different launcher port or stop the specific existing recorder. If a database is already open, use a different database path or stop its owner. The app does not terminate unrelated processes.
 When using another port, set `AFR_URL` to that address before running the standalone examples or demo preparation script.
@@ -190,6 +231,8 @@ For a portable recording, use JSON export. To move or back up the entire workspa
 
 ```text
 src\                    React UI and replay workbench
+lens\                   Versioned evidence engine, adapters, crypto vault and safe mock recovery
+extension\              VS Code controller, separate worker and shared React webview
 shared\                 API contracts and pure trace/replay functions
 server\                 HTTP collector, SQLite store, policies, demos, MCP, exports
 sdk\                    Dependency-free Node capture SDK
@@ -207,6 +250,7 @@ Start-AgentFlightRecorder.ps1
 ## Repository workflow
 
 The CI workflow builds and runs the Node suite on Windows and Linux and exercises the browser workflows on Linux. It uses synthetic data, requires no deployment secrets, and does not publish packages or deploy a service. Browser diagnostics are retained only for failed CI jobs.
+The Node suite includes the real bundled worker; the desktop VS Code-host test is a separate local command. No live Azure call is made by CI.
 
 `.gitignore` excludes dependency folders, builds, databases, local recordings, exports, browser reports, environment files, credentials, logs, and editor state. Commit source, synthetic fixtures, tests, documentation, and the lockfile; regenerate demo data locally rather than publishing private captures.
 

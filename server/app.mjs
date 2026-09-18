@@ -9,6 +9,7 @@ import { replay } from '../shared/trace.mjs';
 import { compareRuns, markdownReport, otlpExport } from './exports.mjs';
 import { HttpError, createRunSchema, batchSchema, finishSchema, demoSchema, approvalSchema } from './schemas.mjs';
 import { mountMcp } from './mcp.mjs';
+import { mountLens } from './lens.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const localHosts = new Set(['127.0.0.1', 'localhost', '[::1]']);
@@ -38,7 +39,7 @@ function boundary(development) {
     next();
   };
 }
-export function createApplication({ databasePath = join(root, 'data', 'flight-recorder.sqlite'), serveStatic = true, development = false, recover = true } = {}) {
+export function createApplication({ databasePath = join(root, 'data', 'flight-recorder.sqlite'), serveStatic = true, development = false, recover = true, lensProvider } = {}) {
   const store = new Store(databasePath);
   if (recover) store.interruptAbandonedRuns();
   const runner = new DemoRunner(store);
@@ -107,13 +108,14 @@ export function createApplication({ databasePath = join(root, 'data', 'flight-re
   });
   app.post('/api/capture/runs/:id/finish', (req, res) => res.json(store.finish(req.params.id, req.headers['x-afr-write-token'], finishSchema.parse(req.body))));
   mountMcp(app, store);
+  mountLens(app, store, { provider: lensProvider });
   app.use('/api', (req, res) => res.status(404).json({ error: { code: 'NOT_FOUND', message: 'This API route does not exist.' } }));
   if (serveStatic) {
     const dist = join(root, 'dist');
     app.use(express.static(dist, { index: false, dotfiles: 'deny' }));
     app.get('/{*path}', (req, res) => {
       if (!existsSync(join(dist, 'index.html'))) throw new HttpError(503, 'FRONTEND_NOT_BUILT', 'Run npm run build, then reload.');
-      res.set('Cache-Control', 'no-cache').sendFile(join(dist, 'index.html'));
+      res.set('Cache-Control', 'no-cache').sendFile('index.html', { root: dist });
     });
   }
   app.use((error, req, res, next) => {

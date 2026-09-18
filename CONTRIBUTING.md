@@ -19,11 +19,15 @@ The committed `.npmrc` contains only a portable lockfile option. Keep authentica
 npm run check
 npm run browser:install
 npm run test:e2e
+npm run test:extension
+npm run extension:package
 ```
 
 The browser installation is needed once per Playwright/browser revision. On Linux hosts missing browser system packages, use `npm run browser:install:ci`. `AFR_BROWSER` may instead point to an existing Chromium-based browser executable.
 
 The Node suite uses isolated workspaces. Browser tests use an in-memory database and write their own outputs to ignored `test-results` and `playwright-report` directories. They do not depend on local demonstration artifacts.
+
+The Node suite builds and exercises the actual separate worker. `test:extension` additionally requires installed VS Code and creates a temporary profile and synthetic Git workspace; it does not modify the normal editor profile. Set `VSCODE_EXECUTABLE` for a nonstandard installation. Live Azure calls are a separate explicit command, not part of CI.
 
 ## Project conventions
 
@@ -35,6 +39,12 @@ The Node suite uses isolated workspaces. Browser tests use an in-memory database
 - Keep the included fixtures fictional and outbound delivery local-only.
 - Add focused regression coverage and update the relevant documentation.
 - Preserve `package-lock.json` and the registry-independent lockfile setting when updating dependencies.
+- Keep browser and VS Code workbenches on the shared React component and Lens contracts.
+- Keep original evidence immutable; corrections, reviews and model drafts belong in separate encrypted artifacts.
+- Never let model prose override a deterministic verdict, fabricate a measured result, or hide an unavailable source.
+- Bump adapter/checkpoint versions when their format or execution semantics change; do not infer exact resume from a timeline.
+- Preserve per-action previews/approval, bounded mock execution, duplicate protection, and explicit capture/version gaps.
+- New UI changes must preserve keyboard access, visible focus, reduced motion, contrast, responsive layout and error visibility.
 
 ## Files that do not belong in commits
 

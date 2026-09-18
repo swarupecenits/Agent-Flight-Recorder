@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { loadLocalEnvironment } from '../server/environment.mjs';
+loadLocalEnvironment();
 const root = fileURLToPath(new URL('../', import.meta.url));
 const children = [
   spawn(process.execPath, ['server/index.mjs'], { cwd: root, stdio: 'inherit', env: { ...process.env, AFR_DEV: '1' } }),

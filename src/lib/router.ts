@@ -3,6 +3,7 @@ export type AppRoute =
   | { page: 'insights' }
   | { page: 'policies' }
   | { page: 'connect' }
+  | { page: 'evidence'; runId?: string }
   | { page: 'invalid'; message: string }
   | { page: 'run'; runId: string; eventSeq: number | null };
 
@@ -24,6 +25,7 @@ export function parseHash(hash: string): AppRoute {
   if (path === '/insights') return { page: 'insights' };
   if (path === '/policies') return { page: 'policies' };
   if (path === '/connect') return { page: 'connect' };
+  if (path === '/evidence') return { page: 'evidence', ...(url.searchParams.has('run') ? { runId: url.searchParams.get('run')! } : {}) };
   if (path.startsWith('/runs/')) {
     let runId: string;
     try { runId = decodeURIComponent(path.slice('/runs/'.length)); }
@@ -44,7 +46,7 @@ export function recordingsHash(): string {
   return '#/';
 }
 
-export function pageHash(page: 'insights' | 'policies' | 'connect'): string {
+export function pageHash(page: 'insights' | 'policies' | 'connect' | 'evidence'): string {
   return `#/${page}`;
 }
 

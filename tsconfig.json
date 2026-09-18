@@ -14,5 +14,5 @@
     "types": ["vite/client", "node"],
     "composite": true
   },
-  "include": ["src", "shared", "sdk/**/*.d.mts", "vite.config.ts"]
+  "include": ["src", "shared", "lens", "sdk/**/*.d.mts", "server/**/*.d.mts", "vite.config.ts"]
 }

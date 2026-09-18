@@ -22,6 +22,15 @@ export interface TraceEvent {
   attributes: Record<string, Json>; stateDelta: Record<string, Json>;
   redactedPaths: string[]; previousHash: string; hash: string;
 }
+export interface NativeRecording {
+  format: 'agent-flight-recorder'; version: 1;
+  header: {
+    id: string; traceId: string; name: string; agentName: string; startedAt: string;
+    origin: 'sdk' | 'demo'; parentRunId: string | null; scenarioId: ScenarioId | null;
+    input: Json; metadata: Record<string, Json>; redactedPaths: string[];
+  };
+  status: RunStatus; endedAt: string | null; rootHash: string; events: TraceEvent[];
+}
 export interface Insight {
   id: string; severity: 'info' | 'warning' | 'error'; title: string; detail: string;
   runId: string; eventSeq: number | null;
