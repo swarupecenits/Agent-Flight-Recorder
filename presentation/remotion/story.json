@@ -1,0 +1,30 @@
+{
+  "title": "The case of the missing proof",
+  "duration": 120,
+  "fps": 30,
+  "voice": "en_US-ljspeech-high",
+  "musicBpm": 102,
+  "screenshots": {
+    "insights": "Screenshot 2026-09-19 000234.png",
+    "manifest": "Screenshot 2026-09-19 000257.png",
+    "policies": "Screenshot 2026-09-19 000311.png",
+    "connect": "Screenshot 2026-09-19 000323.png",
+    "recordings": "Screenshot 2026-09-19 000344.png"
+  },
+  "scenes": [
+    {"id":"launch","duration":8,"chapter":"Meet Maya","lines":["Meet Maya. Her agent says, all tests pass.","One click from shipping. One question: where's the proof?"]},
+    {"id":"gap","duration":9,"chapter":"The missing proof","lines":["The test checked version A. Then the code changed to B.","The answer sounds confident. The evidence is outdated."]},
+    {"id":"capture","duration":9,"chapter":"Record the real story","lines":["Enter Agent Flight Recorder.","Prompts, models, tools, decisions, outputs, errors, and retries become one recorded timeline."]},
+    {"id":"replay","duration":9,"chapter":"Rewind without rerunning","lines":["Maya rewinds, filters the noise, and inspects the recorded state.","Playback never repeats an action."]},
+    {"id":"approval","duration":8,"chapter":"Pause at the boundary","lines":["Demo policies block restricted reads and pause actions for review.","Approval creates a local receipt, not email."]},
+    {"id":"insights","duration":7,"chapter":"Find the turning point","lines":["Find failures, retries, slow tools, and approval waits.","Jump straight to the source."]},
+    {"id":"verdict","duration":12,"chapter":"Question the claim","lines":["Evidence Lens checks the linked result, version, and target.","Supported. Contradicted. Unsupported. Or unverifiable: Maya's old test cannot prove new code."]},
+    {"id":"scope","duration":7,"chapter":"Right result, wrong target","lines":["A staging result cannot prove production.","Denied access means unknown health, not a broken service."]},
+    {"id":"manifest","duration":8,"chapter":"Make the handoff useful","lines":["The manifest separates available tools from actual use.","Handoffs preserve proof, gaps, and next checks."]},
+    {"id":"recovery","duration":10,"chapter":"Correct without erasing","lines":["Maya reviews a correction and approves bounded demo recovery.","A fresh check creates a supported, linked run. The original stays unchanged."]},
+    {"id":"connect","duration":8,"chapter":"Connect your own agent","lines":["Capture through the SDK. Inspect through read-only MCP.","Import, export, and compare recordings."]},
+    {"id":"desktop","duration":10,"chapter":"Keep control","lines":["In V S Code, capture a chosen task and encrypt its evidence.","Review workspace rules, exports, and retention. Make the interface yours."]},
+    {"id":"azure","duration":8,"chapter":"A draft, not a verdict","lines":["Optional Azure drafts a handoff after you approve the preview.","Measured usage. No model overrides."]},
+    {"id":"ending","duration":7,"chapter":"From answer to evidence","lines":["Now Maya hands over proof, not a promise.","Flight Recorder. Follow the run. Question the claim."]}
+  ]
+}

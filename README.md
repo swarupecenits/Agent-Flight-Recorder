@@ -8,6 +8,8 @@ The repository contains the React recorder, the **Agent Evidence Lens** browser/
 
 The interface has Paper/Graphite themes, three accents, adjustable density and text size, progressive technical detail, reduced motion, keyboard navigation, and mobile layouts.
 
+For a concise presenter overview of the use case, implementation, demo flow, and limitations, read `docs\HACKATHON-PROJECT-BRIEF.md`.
+
 **Start with `docs\TESTING-WALKTHROUGH.md` for the complete click-by-click feature tour and expected results.** `docs\EVIDENCE-LENS.md` maps the revised brief to implementation and describes its boundaries.
 
 ## Quick start

@@ -1,0 +1,126 @@
+{
+  "title": "Agent Flight Recorder",
+  "subtitle": "From an agent's answer to evidence you can inspect.",
+  "duration": 120,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "voice": "en_US-ljspeech-high",
+  "screenshots": {
+    "insights": "Screenshot 2026-09-19 000234.png",
+    "manifest": "Screenshot 2026-09-19 000257.png",
+    "policies": "Screenshot 2026-09-19 000311.png",
+    "connect": "Screenshot 2026-09-19 000323.png",
+    "recordings": "Screenshot 2026-09-19 000344.png"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "duration": 8,
+      "chapter": "THE TRUST GAP",
+      "lines": [
+        "An AI agent says, done.",
+        "But what happened? And does the evidence still support the result?"
+      ]
+    },
+    {
+      "id": "maya",
+      "duration": 10,
+      "chapter": "MEET MAYA",
+      "lines": [
+        "Maya's coding agent runs a test, changes the code, then announces: ready to ship.",
+        "But that passing test checked the old code."
+      ]
+    },
+    {
+      "id": "recorder",
+      "duration": 11,
+      "chapter": "01 / OBSERVE",
+      "lines": [
+        "Agent Flight Recorder is a black box for agent execution.",
+        "Prompts, tools, errors, retries, and policies become one ordered story."
+      ]
+    },
+    {
+      "id": "replay",
+      "duration": 10,
+      "chapter": "02 / REPLAY",
+      "lines": [
+        "Maya rewinds to the moment things changed.",
+        "She inspects each step and its recorded state, without running the tools again."
+      ]
+    },
+    {
+      "id": "policies",
+      "duration": 10,
+      "chapter": "KEEP PEOPLE IN CONTROL",
+      "lines": [
+        "An external-recipient action pauses for review. Restricted reads are blocked.",
+        "In this demo, approval creates a local receipt, not a real email."
+      ]
+    },
+    {
+      "id": "insights",
+      "duration": 9,
+      "chapter": "FIND THE IMPORTANT MOMENTS",
+      "lines": [
+        "Insights link failures, retries, and delays to their source runs.",
+        "Maya investigates causes, not just statuses."
+      ]
+    },
+    {
+      "id": "verdicts",
+      "duration": 12,
+      "chapter": "03 / VERIFY",
+      "lines": [
+        "Evidence Lens links each claim to its result, code version, and target.",
+        "Supported. Contradicted. Unsupported. Or unverifiable, like Maya's outdated test."
+      ]
+    },
+    {
+      "id": "manifest",
+      "duration": 9,
+      "chapter": "MAKE THE HANDOFF USEFUL",
+      "lines": [
+        "The manifest separates what was available from what was used.",
+        "Handoffs link proof, gaps, and next checks."
+      ]
+    },
+    {
+      "id": "recovery",
+      "duration": 10,
+      "chapter": "REVIEW. RECHECK. COMPARE.",
+      "lines": [
+        "Maya approves a bounded demo recovery.",
+        "A fresh check creates a linked, supported run. The original stays unchanged."
+      ]
+    },
+    {
+      "id": "connect",
+      "duration": 9,
+      "chapter": "FIT INTO YOUR WORKFLOW",
+      "lines": [
+        "Connect your agent through the SDK or HTTP.",
+        "Export recordings, or inspect them through read-only MCP."
+      ]
+    },
+    {
+      "id": "privacy",
+      "duration": 12,
+      "chapter": "LOCAL FIRST. REVIEWED BY YOU.",
+      "lines": [
+        "Optional Azure drafts handoffs after approval. It never decides verdicts.",
+        "The V S Code companion encrypts local records. Private agent internals stay outside capture."
+      ]
+    },
+    {
+      "id": "close",
+      "duration": 10,
+      "chapter": "FROM ANSWER TO EVIDENCE",
+      "lines": [
+        "Now Maya hands over evidence, not a promise.",
+        "Agent Flight Recorder. Follow the run. Question the claim. Leave better evidence."
+      ]
+    }
+  ]
+}
