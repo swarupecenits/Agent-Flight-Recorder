@@ -2,6 +2,8 @@
 
 **Follow the run. Question the claim. Leave better evidence.**
 
+![homepage](image.png)
+
 Record prompts, explicit decision annotations, model and tool calls, outputs, errors, retries, policy decisions, and human approvals. Inspect the execution timeline, reconstruct state at any event, compare fresh sandbox runs, and export recordings.
 
 The repository contains the React recorder, the **Agent Evidence Lens** browser/VS Code workbench, a Node.js collector, capture SDK, separate encrypted recorder worker, optional live Azure Responses integration, examples, and tests. The original recorder and synthetic evidence examples work without cloud credentials.
